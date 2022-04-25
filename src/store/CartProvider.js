@@ -1,6 +1,6 @@
-import { useReducer } from "react";
+import { useReducer } from 'react';
 
-import CartContext from "./cart-context";
+import CartContext from './cart-context';
 
 const defaultCartState = {
   items: [],
@@ -8,7 +8,7 @@ const defaultCartState = {
 };
 
 const cartReducer = (state, action) => {
-  if (action.type === "ADD") {
+  if (action.type === 'ADD') {
     // Using concat because creates a new array unlike push()
     // which modifies the existing array.
     // The state should not be mutated.
@@ -39,7 +39,7 @@ const cartReducer = (state, action) => {
     };
   }
 
-  if (action.type === "REMOVE") {
+  if (action.type === 'REMOVE') {
     const existingCartItemIndex = state.items.findIndex(
       (item) => item.id === action.item.id
     );
@@ -57,8 +57,12 @@ const cartReducer = (state, action) => {
 
     return {
       item: updatedItems,
-      totalAmount: updatedTotalAmout
-    }
+      totalAmount: updatedTotalAmout,
+    };
+  }
+
+  if (action.type === 'CLEAR') {
+    return defaultCartState;
   }
 
   return defaultCartState;
@@ -71,11 +75,15 @@ const CartProvider = (props) => {
   );
 
   const addItemToCartHandler = (item) => {
-    dispatchCartAction({ type: "ADD", item });
+    dispatchCartAction({ type: 'ADD', item });
   };
 
   const removeItemFromCartHandler = (id) => {
-    dispatchCartAction({ type: "REMOVE", id });
+    dispatchCartAction({ type: 'REMOVE', id });
+  };
+
+  const clearCartHandler = () => {
+    dispatchCartAction({ type: 'CLEAR' });
   };
 
   const cartContext = {
@@ -83,6 +91,7 @@ const CartProvider = (props) => {
     totalAmount: cartState.totalAmount,
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
+    clearCart: clearCartHandler,
   };
 
   return (
